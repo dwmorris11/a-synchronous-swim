@@ -3,6 +3,7 @@ const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
 const handler = require('./keypressHandler.js');
+const q = require('./messageQueue.js');
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -19,7 +20,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
   if (req.method === 'OPTIONS') {
     res.end('');
   } else if (req.method === 'GET') {
-    res.end(handler.randomMessage());
+    res.end(q.dequeue());
   } else {
     res.end('not GET or OPTIONS');
   }

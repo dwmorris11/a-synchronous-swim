@@ -10,12 +10,12 @@
       type: 'GET',
       url: serverUrl,
       data: '',
-      success: (data) => {console.log(data)},
-      error: (err) => {console.log(err)}
+      success: (data) => {SwimTeam.move(data)}, //change to SwimTeam.move(data)
+      error: (err) => {console.error(err)}
     });
   }
 
-  setInterval(fetchSwimCommand, 5000);
+  setInterval(fetchSwimCommand, 1000);
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!

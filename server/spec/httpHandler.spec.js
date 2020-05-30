@@ -3,6 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const expect = require('chai').expect;
 const server = require('./mockServer');
+const EventEmitter = require('events');
+const myEmitter = new EventEmitter();
+const keypress = require('keypress');
 
 const httpHandler = require('../js/httpHandler');
 
@@ -27,7 +30,9 @@ describe('server responses', () => {
     httpHandler.router(req, res);
     expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
-    expect(['left','right','up','down']).to.include(res._data.toString());
+    // keypress(process.stdin);
+
+    expect(res._data.toString()).to.include();
 
     done();
   });
