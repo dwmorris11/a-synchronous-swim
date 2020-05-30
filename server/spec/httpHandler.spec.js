@@ -3,9 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const expect = require('chai').expect;
 const server = require('./mockServer');
-const EventEmitter = require('events');
-const myEmitter = new EventEmitter();
-const keypress = require('keypress');
+const messageQueue = require('../js/messageQueue.js');
 
 const httpHandler = require('../js/httpHandler');
 
@@ -26,13 +24,16 @@ describe('server responses', () => {
 
   it('should respond to a GET request for a swim command', (done) => {
     let {req, res} = server.mock('/', 'GET');
-
-    httpHandler.router(req, res);
+    //add message manually to queue instead of by keypress
+    messageQueue.enqueue('up');
+    //set up place to store dequeued data
+    let dequeued;
+    httpHandler.router(req, res, (data) => {
+      dequeued = data;
+    }); //<----pass in callback to grab dequeued data and store
     expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
-    // keypress(process.stdin);
-
-    expect(res._data.toString()).to.include();
+    expect(dequeued).to.equal('up');//<--test stored value above
 
     done();
   });

@@ -20,10 +20,11 @@ module.exports.router = (req, res, next = ()=>{}) => {
   if (req.method === 'OPTIONS') {
     res.end('');
   } else if (req.method === 'GET') {
-    res.end(q.dequeue());
+    var dequeued = q.dequeue(); //make accessible to test below
+    res.end(dequeued);
   } else {
     res.end('not GET or OPTIONS');
   }
 
-  next(); // invoke next() at the end of a request to help with testing!
+  next(dequeued); // invoke next() at the end of a request to help with testing!
 };
