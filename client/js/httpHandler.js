@@ -17,6 +17,18 @@
 
   setInterval(fetchSwimCommand, 1000);
 
+  const fetchPool = () => {
+    $.ajax({
+      type: 'GET',
+      url: serverUrl + '/background',
+      data: '',
+      success: (data) => {appendToDOM(data)},
+      error: (err) => {console.error(err)}
+    });
+  }
+  fetchPool();
+  // setInterval(fetchPool, 5000);
+
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.

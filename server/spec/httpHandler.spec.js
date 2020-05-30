@@ -26,8 +26,10 @@ describe('server responses', () => {
     let {req, res} = server.mock('/', 'GET');
     //add message manually to queue instead of by keypress
     messageQueue.enqueue('up');
+
     //set up place to store dequeued data
     let dequeued;
+
     httpHandler.router(req, res, (data) => {
       dequeued = data;
     }); //<----pass in callback to grab dequeued data and store
