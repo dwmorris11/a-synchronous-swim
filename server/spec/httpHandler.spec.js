@@ -68,9 +68,7 @@ describe('server responses', () => {
   it('should respond to a POST request to save a background image', (done) => {
     fs.readFile(postTestFile, (err, fileData) => {
       httpHandler.backgroundImageFile = path.join('.', 'spec', 'temp.jpg');
-      var formData = new FormData();
-      formData.append('file', fileData);
-      let {req, res} = server.mock('/background', 'POST', formData);
+      let {req, res} = server.mock('/background', 'POST', fileData);
 
       httpHandler.router(req, res, () => {
         expect(res._responseCode).to.equal(201);
