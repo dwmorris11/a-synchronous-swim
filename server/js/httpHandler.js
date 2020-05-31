@@ -10,7 +10,7 @@ const nodeStatic = require('node-static');
 
 
 // Path for the background image ///////////////////////
-module.exports.backgroundImageFile = path.join('.', 'background.jpg');
+module.exports.backgroundImageFile = path.join(__dirname, 'background.jpg');
 ////////////////////////////////////////////////////////
 
 let messageQueue = null;
@@ -33,49 +33,15 @@ module.exports.router = (req, res, next = ()=>{}) => {
         "access-control-max-age": 10
       });
 
-      // res.end('http://127.0.0.1:3000/js/background.jpg');
-      let readStream = fs.createReadStream(path.join(__dirname, 'background.jpg'));
-      // readStream.on('open', () => {
-      //   // res.setHeader('Content-Type', 'image/jpeg');
+      let readStream = fs.createReadStream(module.exports.backgroundImageFile);
+      readStream.on('error', (err)=> {
+        console.log('test');
+        res.writeHead(404, headers);
+        res.end(err);
+      });
       readStream.pipe(res);
-      // });
-
-      // fs.readFile(path.join(__dirname, 'background.jpg'), (err, data) => {
-      //   if (err) {
-      //     console.error(err, 'readFile error', __dirname);
-      //     return;
-      //   }
-      //   res.end(data);
-      // });
-
-
-
-      // res.writeHead(200, {
-      //   'Content-Type': 'image/jpeg',
-      //   "access-control-allow-origin": "*",
-      //   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-      //   "access-control-allow-headers": "*",
-      //   "access-control-max-age": 10
-      // });
 
       return;
-      //======================
-      // req.addListener('end', () => {
-      //   file.serve(req, res, (err, response) => {
-      //     res.end(file.serveFile('/background.jpg', 200, {}, req, res));
-      //   });
-      // }).resume();
-      //======================
-      // fs.readFile('..' + req.url + '/background.jpg', (err, data) => {
-      //   console.log('..' + req.url + '/background.jpg');
-      //   if (err) {
-      //     res.writeHead(404);
-      //     res.end(JSON.stringify(err));
-      //     return;
-      //   }
-      //   res.writeHead(200);
-      //   res.end(data);
-      // });
     }
   }
 
