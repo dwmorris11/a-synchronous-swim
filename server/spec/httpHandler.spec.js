@@ -42,9 +42,9 @@ describe('server responses', () => {
 
   it('should respond with 404 to a GET request for a missing background image', (done) => {
     httpHandler.backgroundImageFile = path.join('.', 'spec', 'missing.jpg');
-    let {req, res} = server.mock('/', 'GET');
+    let {req, res} = server.mock('/background', 'GET');
 
-    httpHandler.router(req, res, () => {
+    httpHandler.router(req, res, (res) => {
       expect(res._responseCode).to.equal(404);
       expect(res._ended).to.equal(true);
       done();

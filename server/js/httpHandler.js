@@ -25,6 +25,29 @@ module.exports.router = (req, res, next = ()=>{}) => {
   if (req.url === '/background') {
     if (req.method === 'GET') {
 
+      // res.writeHead(200, {
+      //   'Content-Type': 'image/jpeg',
+      //   "access-control-allow-origin": "*",
+      //   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+      //   "access-control-allow-headers": "*",
+      //   "access-control-max-age": 10
+      // });
+
+      //if backgroundImageFile does not exist
+      if ( !( fs.existsSync(module.exports.backgroundImageFile) ) ) {
+        res.writeHead(404, {
+          'Content-Type': 'image/jpeg',
+          "access-control-allow-origin": "*",
+          "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "access-control-allow-headers": "*",
+          "access-control-max-age": 10
+        });
+        res.statusCode = 404;
+        res.end();
+        next(res);
+        return;
+      }
+
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
         "access-control-allow-origin": "*",
@@ -34,11 +57,11 @@ module.exports.router = (req, res, next = ()=>{}) => {
       });
 
       let readStream = fs.createReadStream(module.exports.backgroundImageFile);
-      readStream.on('error', (err)=> {
-        console.log('test');
-        res.writeHead(404, headers);
-        res.end(err);
-      });
+      // readStream.on('error', (err)=> {
+      //   console.log('test');
+      //   res.writeHead(404, headers);
+      //   res.end(err);
+      // });
       readStream.pipe(res);
 
       return;
