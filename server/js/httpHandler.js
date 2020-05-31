@@ -51,7 +51,8 @@ module.exports.router = (req, res, next = ()=>{}) => {
   }
   //POST BACKGROUND============================================================
   if (req.method === 'POST'){
-
+    console.log(req._postData);
+    const form = formidable();
     form.parse(req, (err, fields, files) => {
       if(err) {
         res.writeHead(400, headers);

@@ -4,7 +4,7 @@ const path = require('path');
 const expect = require('chai').expect;
 const server = require('./mockServer');
 const messageQueue = require('../js/messageQueue.js');
-
+const formidable = require('formidable');
 const httpHandler = require('../js/httpHandler');
 
 
@@ -68,7 +68,9 @@ describe('server responses', () => {
   it('should respond to a POST request to save a background image', (done) => {
     fs.readFile(postTestFile, (err, fileData) => {
       httpHandler.backgroundImageFile = path.join('.', 'spec', 'temp.jpg');
-      let {req, res} = server.mock('/background', 'POST', fileData);
+      var formData = new FormData();
+      formData.append('file', fileData);
+      let {req, res} = server.mock('/background', 'POST', formData);
 
       httpHandler.router(req, res, () => {
         expect(res._responseCode).to.equal(201);
