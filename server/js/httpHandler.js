@@ -6,9 +6,6 @@ const handler = require('./keypressHandler.js');
 const q = require('./messageQueue.js');
 const formidable = require('formidable');
 
-// const file = new nodeStatic.Server('../server/background');
-
-
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join(__dirname, 'background.jpg');
 ////////////////////////////////////////////////////////
@@ -47,16 +44,12 @@ module.exports.router = (req, res, next = ()=>{}) => {
       });
       let readStream = fs.createReadStream(module.exports.backgroundImageFile);
       readStream.pipe(res);
-      // res.end();
       next(res);
-
       return;
     }
   }
   if (req.method === 'POST'){
-    //use formidable library
-    //parse the form data (pass in req obj)
-    const form = formidable();
+
     form.parse(req, (err, fields, files) => {
       if(err) {
         console.log('Problem');
@@ -83,11 +76,11 @@ module.exports.router = (req, res, next = ()=>{}) => {
     res.end('');
   } else if (req.method === 'GET') {
     res.writeHead(200, headers);
-    var dequeued = q.dequeue(); //make accessible to test below
+    var dequeued = q.dequeue();
     res.end(dequeued);
   } else {
     res.writeHead(200, headers);
-    res.end('not GET or OPTIONS - no action');
+    res.end('Not an implemented method - please use OPTIONS, GET, or POST');
   }
 
   next(dequeued); // invoke next() at the end of a request to help with testing!
