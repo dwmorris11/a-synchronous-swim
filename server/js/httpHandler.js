@@ -20,6 +20,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
 
   if (req.url === '/background') {
+    //GET BACKGROUND===========================================================
     if (req.method === 'GET') {
 
       if ( !( fs.existsSync(module.exports.backgroundImageFile) ) ) {
@@ -48,11 +49,12 @@ module.exports.router = (req, res, next = ()=>{}) => {
       return;
     }
   }
+  //POST BACKGROUND============================================================
   if (req.method === 'POST'){
 
     form.parse(req, (err, fields, files) => {
       if(err) {
-        console.log('Problem');
+        res.writeHead(400, headers);
         res.end();
         return;
       }
@@ -61,27 +63,32 @@ module.exports.router = (req, res, next = ()=>{}) => {
       let newPath = path.join(__dirname, 'background.jpg');
       fs.rename(oldPath, newPath, (err)=> {
         if(err){
-        console.log('error', err);
-        res.end();
-        return;
+          res.writeHead(400, headers);
+          res.end();
+          return;
         }
       });
     });
-    res.writeHead(200, headers);
+    res.writeHead(201, headers);
     res.end();
     return;
   }
+  //OPTIONS REQUEST============================================================
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end('');
+
+  //GET SWIM COMMANDS==========================================================
   } else if (req.method === 'GET') {
     res.writeHead(200, headers);
     var dequeued = q.dequeue();
     res.end(dequeued);
+    next(dequeued); // invoke next() at the end of a request to help with testing!
+
+  //ALL OTHER REQUESTS=========================================================
   } else {
     res.writeHead(200, headers);
     res.end('Not an implemented method - please use OPTIONS, GET, or POST');
   }
 
-  next(dequeued); // invoke next() at the end of a request to help with testing!
 };
