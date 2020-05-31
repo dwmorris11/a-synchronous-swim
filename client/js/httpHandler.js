@@ -35,6 +35,7 @@
       success: () => {
         // reload the page
         window.location = window.location.href;
+        console.log('success CB triggered');
       }
     });
   };
