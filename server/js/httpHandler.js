@@ -4,7 +4,7 @@ const headers = require('./cors');
 const multipart = require('./multipartUtils');
 const handler = require('./keypressHandler.js');
 const q = require('./messageQueue.js');
-const nodeStatic = require('node-static');
+const formidable = require('formidable');
 
 // const file = new nodeStatic.Server('../server/background');
 
@@ -25,15 +25,6 @@ module.exports.router = (req, res, next = ()=>{}) => {
   if (req.url === '/background') {
     if (req.method === 'GET') {
 
-      // res.writeHead(200, {
-      //   'Content-Type': 'image/jpeg',
-      //   "access-control-allow-origin": "*",
-      //   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-      //   "access-control-allow-headers": "*",
-      //   "access-control-max-age": 10
-      // });
-
-      //if backgroundImageFile does not exist
       if ( !( fs.existsSync(module.exports.backgroundImageFile) ) ) {
         res.writeHead(404, {
           'Content-Type': 'image/jpeg',
@@ -42,7 +33,6 @@ module.exports.router = (req, res, next = ()=>{}) => {
           "access-control-allow-headers": "*",
           "access-control-max-age": 10
         });
-        res.statusCode = 404;
         res.end();
         next(res);
         return;
@@ -55,19 +45,39 @@ module.exports.router = (req, res, next = ()=>{}) => {
         "access-control-allow-headers": "*",
         "access-control-max-age": 10
       });
-
       let readStream = fs.createReadStream(module.exports.backgroundImageFile);
-      // readStream.on('error', (err)=> {
-      //   console.log('test');
-      //   res.writeHead(404, headers);
-      //   res.end(err);
-      // });
       readStream.pipe(res);
+      // res.end();
+      next(res);
 
       return;
     }
   }
-
+  if (req.method === 'POST'){
+    //use formidable library
+    //parse the form data (pass in req obj)
+    const form = formidable();
+    form.parse(req, (err, fields, files) => {
+      if(err) {
+        console.log('Problem');
+        res.end();
+        return;
+      }
+      let file = files['file'];
+      let oldPath = file.path;
+      let newPath = path.join(__dirname, 'background.jpg');
+      fs.rename(oldPath, newPath, (err)=> {
+        if(err){
+        console.log('error', err);
+        res.end();
+        return;
+        }
+      });
+    });
+    res.writeHead(200, headers);
+    res.end();
+    return;
+  }
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end('');
